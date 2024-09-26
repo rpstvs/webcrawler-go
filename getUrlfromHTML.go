@@ -3,23 +3,41 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"strings"
 
 	"golang.org/x/net/html"
 )
 
 func getUrlFromHtml(htmlBody, rawBaseURL string) ([]string, error) {
-	reader := strings.NewReader(htmlBody)
+	urlParsed, err := url.Parse(rawBaseURL)
 
+	if err != nil {
+		return nil, fmt.Errorf("Error parsing base url: %v", err)
+	}
+
+	reader := strings.NewReader(htmlBody)
 	tree, err := html.Parse(reader)
 	if err != nil {
 		log.Println("Couldnt read html body")
 	}
+	var urlsOnHTML []string
 	var f func(*html.Node)
 	f = func(n *html.Node) {
-		fmt.Println(n.Data)
-		if n.Type == html.ElementNode && n.Data == "a" {
 
+		if n.Type == html.ElementNode && n.Data == "a" {
+			for _, p := range n.Attr {
+				if p.Key == "href" {
+					hr	ef, err := url.Parse(p.Val)
+
+					if err != nil {
+						fmt.Printf("couldn't parse href '%v': %v\n", p.Val, err)
+						continue
+					}
+					resolvedUrl := urlParsed.ResolveReference(href)
+					urlsOnHTML = append(urlsOnHTML, resolvedUrl.String())
+				}
+			}
 		}
 
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -29,5 +47,5 @@ func getUrlFromHtml(htmlBody, rawBaseURL string) ([]string, error) {
 
 	f(tree)
 
-	return []string{""}, nil
+	return urlsOnHTML, nil
 }
