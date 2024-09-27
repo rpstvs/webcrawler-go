@@ -28,7 +28,7 @@ func getUrlFromHtml(htmlBody, rawBaseURL string) ([]string, error) {
 		if n.Type == html.ElementNode && n.Data == "a" {
 			for _, p := range n.Attr {
 				if p.Key == "href" {
-					hr	ef, err := url.Parse(p.Val)
+					href, err := url.Parse(p.Val)
 
 					if err != nil {
 						fmt.Printf("couldn't parse href '%v': %v\n", p.Val, err)
