@@ -13,7 +13,7 @@ func getUrlFromHtml(htmlBody, rawBaseURL string) ([]string, error) {
 	urlParsed, err := url.Parse(rawBaseURL)
 
 	if err != nil {
-		return nil, fmt.Errorf("Error parsing base url: %v", err)
+		return nil, fmt.Errorf("couldn't parse base URL: %v", err)
 	}
 
 	reader := strings.NewReader(htmlBody)
