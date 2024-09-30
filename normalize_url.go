@@ -1,6 +1,9 @@
 package main
 
-import "net/url"
+import (
+	"net/url"
+	"strings"
+)
 
 func normalizeURL(urL string) (string, error) {
 
@@ -9,5 +12,12 @@ func normalizeURL(urL string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return parsedURL.Host + parsedURL.Path, nil
+
+	normalizedURL := parsedURL.Host + parsedURL.Path
+
+	normalizedURL = strings.ToLower(normalizedURL)
+
+	normalizedURL = strings.TrimSuffix(normalizedURL, "/")
+
+	return normalizedURL, nil
 }

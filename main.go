@@ -15,9 +15,10 @@ func main() {
 		os.Exit(1)
 	} else {
 		baseURL := os.Args[1]
-		c, _ := getHtmml(baseURL)
+		pages := make(map[string]int)
+		crawlPage(baseURL, baseURL, pages)
 		fmt.Printf("starting crawl: %s \n", baseURL)
-		fmt.Println(c)
+
 	}
 
 }
