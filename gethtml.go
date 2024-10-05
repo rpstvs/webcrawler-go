@@ -34,7 +34,5 @@ func getHTML(rawURL string) (string, error) {
 
 	c := string(dat)
 
-	fmt.Println(c)
-
 	return c, nil
 }

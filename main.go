@@ -14,11 +14,22 @@ func main() {
 		fmt.Println("too many arguments provided")
 		os.Exit(1)
 	} else {
+
 		baseURL := os.Args[1]
-		pages := make(map[string]int)
-		crawlPage(baseURL, baseURL, pages)
+
+		cfg, err := configure(baseURL, 3)
+
+		if err != nil {
+			fmt.Printf("error configure %v: ", err)
+			return
+		}
+
 		fmt.Printf("starting crawl: %s \n", baseURL)
 
+		cfg.wg.Add(1)
+		go cfg.crawlPage(baseURL)
+		cfg.wg.Wait()
+		fmt.Println(cfg.pages)
 	}
 
 }
