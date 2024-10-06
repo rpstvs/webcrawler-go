@@ -14,6 +14,12 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		cfg.wg.Done()
 	}()
 
+	stop := cfg.checkPagesLenght()
+
+	if stop {
+		return
+	}
+
 	currentURL, err := url.Parse(rawCurrentURL)
 
 	if err != nil {
@@ -39,9 +45,20 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	if err != nil {
 		fmt.Printf("Error getting the html: %s \n", err)
 	}
-	urls, _ := getUrlFromHtml(html, cfg.baseURL.String())
+	urls, _ := getUrlFromHtml(html, cfg.baseURL)
 
 	for _, nexturl := range urls {
-		cfg.crawlPage(nexturl)
+		cfg.wg.Add(1)
+		go cfg.crawlPage(nexturl)
 	}
+}
+
+func (cfg *config) checkPagesLenght() bool {
+	cfg.mu.Lock()
+	defer cfg.mu.Unlock()
+
+	if len(cfg.pages) > cfg.maxPages {
+		return true
+	}
+	return false
 }

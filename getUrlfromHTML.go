@@ -9,12 +9,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func getUrlFromHtml(htmlBody, rawBaseURL string) ([]string, error) {
-	urlParsed, err := url.Parse(rawBaseURL)
-
-	if err != nil {
-		return nil, fmt.Errorf("couldn't parse base URL: %v", err)
-	}
+func getUrlFromHtml(htmlBody string, baseUrl *url.URL) ([]string, error) {
 
 	reader := strings.NewReader(htmlBody)
 	tree, err := html.Parse(reader)
@@ -34,7 +29,7 @@ func getUrlFromHtml(htmlBody, rawBaseURL string) ([]string, error) {
 						fmt.Printf("couldn't parse href '%v': %v\n", p.Val, err)
 						continue
 					}
-					resolvedUrl := urlParsed.ResolveReference(href)
+					resolvedUrl := baseUrl.ResolveReference(href)
 					urlsOnHTML = append(urlsOnHTML, resolvedUrl.String())
 				}
 			}
