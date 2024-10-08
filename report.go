@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 )
 
 type Page struct {
@@ -24,6 +25,19 @@ func createReport(pages map[string]int, baseURL string) {
 }
 
 func sortMap(pages map[string]int) []Page {
+	pagesSlice := []Page{}
 
-	return []Page{}
+	for url, count := range pages {
+		pagesSlice = append(pagesSlice, Page{url: url, count: count})
+	}
+
+	sort.Slice(pagesSlice, func(i, j int) bool {
+		if pagesSlice[i].count == pagesSlice[j].count {
+			return pagesSlice[i].url < pagesSlice[j].url
+		}
+		return pagesSlice[i].count > pagesSlice[j].count
+	})
+
+	return pagesSlice
+
 }
