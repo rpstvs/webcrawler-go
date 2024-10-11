@@ -15,7 +15,7 @@ type Page struct {
 func createReport(pages map[string]int, baseURL string) {
 	fmt.Printf(`
 ==================
-Report for %s 
+REPORT for %s 
 ==================
 `, baseURL)
 
